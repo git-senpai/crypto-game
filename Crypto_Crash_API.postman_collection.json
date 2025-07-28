@@ -1,0 +1,578 @@
+{
+	"info": {
+		"_postman_id": "crypto-crash-api",
+		"name": "Crypto Crash API",
+		"description": "API collection for the Crypto Crash game backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Game",
+			"item": [
+				{
+					"name": "Get Game State",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/game/state",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game",
+								"state"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Place Bet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"playerId\": \"player1\",\n  \"username\": \"CryptoKing\",\n  \"usdAmount\": 100,\n  \"currency\": \"btc\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/game/bet",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game",
+								"bet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cashout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"playerId\": \"player1\",\n  \"username\": \"CryptoKing\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/game/cashout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game",
+								"cashout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Round History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/game/history?limit=10&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game",
+								"history"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Round Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/game/round/{{roundId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game",
+								"round",
+								"{{roundId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Game Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/game/statistics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"game",
+								"statistics"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Get Wallet Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/wallet/balance/{{playerId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"wallet",
+								"balance",
+								"{{playerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Player",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"playerId\": \"newplayer\",\n  \"username\": \"NewPlayer\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/wallet/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"wallet",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/wallet/transactions/{{playerId}}?limit=20&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"wallet",
+								"transactions",
+								"{{playerId}}"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Player Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/wallet/statistics/{{playerId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"wallet",
+								"statistics",
+								"{{playerId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Players",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/wallet/players?limit=50&page=1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"wallet",
+								"players"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deposit",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"playerId\": \"player1\",\n  \"amount\": 1000,\n  \"currency\": \"usd\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/wallet/deposit",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"wallet",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Crypto",
+			"item": [
+				{
+					"name": "Get Crypto Prices",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/prices",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"prices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BTC Price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/price/btc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"price",
+								"btc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ETH Price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/price/eth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"price",
+								"eth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert Currency",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/convert?amount=100&fromCurrency=usd&toCurrency=btc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"convert"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "100"
+								},
+								{
+									"key": "fromCurrency",
+									"value": "usd"
+								},
+								{
+									"key": "toCurrency",
+									"value": "btc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BTC Price History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/history/btc?days=7",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"history",
+								"btc"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get ETH Price History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/history/eth?days=7",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"history",
+								"eth"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Market Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/market-stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"market-stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Crypto Service Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Supported Currencies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/crypto/supported",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"crypto",
+								"supported"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "playerId",
+			"value": "player1",
+			"type": "string"
+		},
+		{
+			"key": "roundId",
+			"value": "1234567890-abc123",
+			"type": "string"
+		}
+	]
+} 
