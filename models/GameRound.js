@@ -122,44 +122,81 @@ gameRoundSchema.index({ startTime: -1 });
 gameRoundSchema.index({ 'bets.playerId': 1 });
 
 // Method to add a bet
-gameRoundSchema.methods.addBet = function(betData) {
+gameRoundSchema.methods.addBet = async function(betData) {
+  // Use updateOne for atomic update
+  await this.constructor.updateOne(
+    { _id: this._id },
+    {
+      $push: { bets: betData },
+      $inc: { totalBets: betData.usdAmount }
+    }
+  );
+  // Also update the in-memory object for immediate use
   this.bets.push(betData);
   this.totalBets += betData.usdAmount;
-  return this.save();
 };
 
 // Method to process cashout
-gameRoundSchema.methods.processCashout = function(playerId, multiplier) {
+gameRoundSchema.methods.processCashout = async function(playerId, multiplier) {
   const bet = this.bets.find(b => b.playerId === playerId && !b.cashoutMultiplier);
   if (!bet) {
     throw new Error('No active bet found for player');
   }
 
+  // Prepare update
+  const cashoutCryptoAmount = bet.cryptoAmount * multiplier;
+  const cashoutUsdAmount = cashoutCryptoAmount * bet.priceAtTime;
+  const now = new Date();
+
+  await this.constructor.updateOne(
+    { _id: this._id, 'bets.playerId': playerId, 'bets.cashoutMultiplier': null },
+    {
+      $set: {
+        'bets.$.cashoutMultiplier': multiplier,
+        'bets.$.cashoutCryptoAmount': cashoutCryptoAmount,
+        'bets.$.cashoutUsdAmount': cashoutUsdAmount,
+        'bets.$.isWinner': true,
+        'bets.$.cashoutTime': now
+      },
+      $inc: {
+        totalCashouts: cashoutUsdAmount,
+        totalWinners: 1
+      }
+    }
+  );
+
+  // Update in-memory for immediate use
   bet.cashoutMultiplier = multiplier;
-  bet.cashoutCryptoAmount = bet.cryptoAmount * multiplier;
-  bet.cashoutUsdAmount = bet.cashoutCryptoAmount * bet.priceAtTime;
+  bet.cashoutCryptoAmount = cashoutCryptoAmount;
+  bet.cashoutUsdAmount = cashoutUsdAmount;
   bet.isWinner = true;
-  bet.cashoutTime = new Date();
-
-  this.totalCashouts += bet.cashoutUsdAmount;
+  bet.cashoutTime = now;
+  this.totalCashouts += cashoutUsdAmount;
   this.totalWinners += 1;
-
-  return this.save();
 };
 
 // Method to finalize round
-gameRoundSchema.methods.finalizeRound = function() {
+gameRoundSchema.methods.finalizeRound = async function() {
   this.status = 'crashed';
   this.endTime = new Date();
-  
   // Calculate losers
   const activeBets = this.bets.filter(b => !b.cashoutMultiplier);
-  this.totalLosers = activeBets.length;
-  
+  const totalLosers = activeBets.length;
   // Calculate house profit
-  this.houseProfit = this.totalBets - this.totalCashouts;
-  
-  return this.save();
+  const houseProfit = this.totalBets - this.totalCashouts;
+  await this.constructor.updateOne(
+    { _id: this._id },
+    {
+      $set: {
+        status: 'crashed',
+        endTime: this.endTime,
+        totalLosers: totalLosers,
+        houseProfit: houseProfit
+      }
+    }
+  );
+  this.totalLosers = totalLosers;
+  this.houseProfit = houseProfit;
 };
 
 // Method to get round statistics

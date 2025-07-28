@@ -55,6 +55,7 @@ app.get('/health', (req, res) => {
 // Initialize services
 const gameService = new GameService();
 const webSocketService = new WebSocketService(io, gameService);
+webSocketService.startCryptoPriceUpdates();
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/crypto-crash', {

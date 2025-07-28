@@ -97,8 +97,8 @@ class GameService extends EventEmitter {
       });
 
       // Start the round after a short delay
-      setTimeout(() => {
-        this.activateRound();
+      setTimeout(async () => {
+        await this.activateRound();
       }, 3000); // 3 second waiting period
 
     } catch (error) {
@@ -111,13 +111,13 @@ class GameService extends EventEmitter {
   /**
    * Activate the current round
    */
-  activateRound() {
+  async activateRound() {
     if (!this.currentRound || this.currentRound.status !== 'waiting') {
       return;
     }
 
     this.currentRound.status = 'active';
-    this.currentRound.save();
+    await this.currentRound.save();
 
     const startTime = Date.now();
     let currentMultiplier = 1.0;

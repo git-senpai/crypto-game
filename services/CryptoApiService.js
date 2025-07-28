@@ -53,17 +53,44 @@ class CryptoApiService {
       }
     } catch (error) {
       logger.error('Error fetching crypto prices:', error.message);
-      
-      // Return cached prices if available, otherwise use fallback prices
-      if (this.prices.btc > 0) {
-        logger.warn('Using cached prices due to API error');
-        return this.prices;
-      } else {
-        logger.warn('Using fallback prices due to API error');
-        return {
-          btc: 60000, // Fallback BTC price
-          eth: 3000   // Fallback ETH price
-        };
+      // Try CoinMarketCap as fallback
+      try {
+        logger.info('Trying CoinMarketCap as fallback for crypto prices');
+        const cmcApiKey = process.env.COINMARKETCAP_API_KEY || '46eeb2eb-03a7-4ee6-8c62-df6195127b31';
+        const cmcResponse = await axios.get('https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest', {
+          params: {
+            symbol: 'BTC,ETH',
+            convert: 'USD'
+          },
+          headers: {
+            'X-CMC_PRO_API_KEY': cmcApiKey
+          },
+          timeout: 5000
+        });
+        if (cmcResponse.data && cmcResponse.data.data && cmcResponse.data.data.BTC && cmcResponse.data.data.ETH) {
+          this.prices = {
+            btc: cmcResponse.data.data.BTC.quote.USD.price,
+            eth: cmcResponse.data.data.ETH.quote.USD.price
+          };
+          this.lastFetch = Date.now();
+          logger.info('Crypto prices updated from CoinMarketCap:', this.prices);
+          return this.prices;
+        } else {
+          throw new Error('Invalid response format from CoinMarketCap API');
+        }
+      } catch (cmcError) {
+        logger.error('Error fetching crypto prices from CoinMarketCap:', cmcError.message);
+        // Return cached prices if available, otherwise use fallback prices
+        if (this.prices.btc > 0) {
+          logger.warn('Using cached prices due to API error');
+          return this.prices;
+        } else {
+          logger.warn('Using fallback prices due to API error');
+          return {
+            btc: 60000, // Fallback BTC price
+            eth: 3000   // Fallback ETH price
+          };
+        }
       }
     }
   }
