@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Crash Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-rocket"></i>
+                        <span>Crypto Crash</span>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat">
+                            <span class="stat-label">Connected</span>
+                            <span class="stat-value" id="connectedPlayers">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">BTC Price</span>
+                            <span class="stat-value" id="btcPrice">$0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">ETH Price</span>
+                            <span class="stat-value" id="ethPrice">$0</span>
+                        </div>
+                        <div class="stat wallet-header">
+                            <span class="stat-label">Wallet</span>
+                            <span class="stat-value" id="headerUsdBalance">$0</span>
+                            <span class="stat-value" id="headerBtcBalance">0.00000000 BTC</span>
+                            <span class="stat-value" id="headerEthBalance">0.000000 ETH</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <div class="game-layout">
+                    <!-- Game Area -->
+                    <div class="game-area" id="gameArea">
+                        <!-- Game Status -->
+                        <div class="game-status" id="gameStatus">
+                            <div class="status-indicator">
+                                <span class="status-text">Waiting for round...</span>
+                            </div>
+                        </div>
+
+                        <!-- Multiplier Display -->
+                        <div class="multiplier-display" id="multiplierDisplay">
+                            <div class="multiplier-value" id="multiplierValue">1.00x</div>
+                            <div class="multiplier-label">MULTIPLIER</div>
+                        </div>
+
+                        <!-- Betting Interface -->
+                        <div class="betting-interface" id="bettingInterface">
+                            <div class="bet-form">
+                                <div class="form-group">
+                                    <label for="betAmount">Bet Amount (USD)</label>
+                                    <input type="number" id="betAmount" min="1" max="10000" value="10" step="1">
+                                </div>
+                                <div class="form-group">
+                                    <label for="betCurrency">Currency</label>
+                                    <select id="betCurrency">
+                                        <option value="btc">Bitcoin (BTC)</option>
+                                        <option value="eth">Ethereum (ETH)</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary" id="placeBetBtn">
+                                    <i class="fas fa-coins"></i>
+                                    Place Bet
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cashout Interface -->
+                        <div class="cashout-interface" id="cashoutInterface" style="display: none;">
+                            <div class="cashout-info">
+                                <div class="current-multiplier">
+                                    <span class="label">Current Multiplier:</span>
+                                    <span class="value" id="currentMultiplier">1.00x</span>
+                                </div>
+                                <div class="potential-win">
+                                    <span class="label">Potential Win:</span>
+                                    <span class="value" id="potentialWin">$0</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" id="cashoutBtn">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                Cash Out
+                            </button>
+                        </div>
+
+                        <!-- Game Chart -->
+                        <div class="game-chart">
+                            <canvas id="gameChart" width="800" height="400"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar -->
+                    <div class="sidebar">
+                        <!-- Player Info -->
+                        <div class="player-info" id="playerInfo">
+                            <div class="player-header">
+                                <i class="fas fa-user-circle"></i>
+                                <span id="playerName">Guest</span>
+                            </div>
+                            <div class="wallet-balance">
+                                <div class="balance-item">
+                                    <span class="currency">USD</span>
+                                    <span class="amount" id="usdBalance">$0</span>
+                                </div>
+                                <div class="balance-item">
+                                    <span class="currency">BTC</span>
+                                    <span class="amount" id="btcBalance">0.00000000</span>
+                                </div>
+                                <div class="balance-item">
+                                    <span class="currency">ETH</span>
+                                    <span class="amount" id="ethBalance">0.00000000</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="recent-activity">
+                            <h3>Recent Activity</h3>
+                            <div class="activity-list" id="activityList">
+                                <div class="activity-item">
+                                    <span class="activity-text">Welcome to Crypto Crash!</span>
+                                    <span class="activity-time">Just now</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Round History -->
+                        <div class="round-history">
+                            <h3>Recent Rounds</h3>
+                            <div class="history-list" id="historyList">
+                                <!-- Round history items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Authentication Modal -->
+        <div class="modal" id="authModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Join the Game</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="playerId">Player ID</label>
+                        <input type="text" id="playerId" placeholder="Enter your player ID">
+                    </div>
+                    <button class="btn btn-primary" id="joinGameBtn">
+                        <i class="fas fa-play"></i>
+                        Join Game
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div class="toast" id="toast">
+            <div class="toast-content">
+                <span class="toast-message" id="toastMessage"></span>
+                <button class="toast-close" id="toastClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
